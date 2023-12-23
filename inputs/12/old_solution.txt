@@ -1,0 +1,82 @@
+type Matrix = Vec<Vec<Outcome>>;
+#[derive(Clone, Copy, PartialEq, Default)]
+enum Outcome {
+    #[default]
+    None,
+    Invalid,
+    Valid(usize),
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+enum Spring {
+    #[default]
+    Ok,
+    Broken,
+    Unknown,
+}
+
+impl From<char> for Spring {
+    fn from(value: char) -> Self {
+        match value {
+            '.' => Self::Ok,
+            '#' => Self::Broken,
+            '?' => Self::Unknown,
+            _ => panic!("invalid token"),
+        }
+    }
+}
+
+impl Outcome {
+    fn unwrap_or(&self, value: usize) -> usize {
+        if let Self::Valid(outcome) = self {
+            *outcome
+        } else {
+            value
+        }
+    }
+}
+
+fn compute_possibilities(line: &Vec<char>, sequence: &Vec<usize>) -> usize {
+    let mut m: Matrix = vec![vec![Outcome::None; 128]; 128];
+    arrangements(&line.into_iter().map(|x| Spring::from(*x)).collect::<Vec<_>>()[..], &sequence[..], &mut m).unwrap_or(0)
+}
+
+fn place(len: usize, springs: &[Spring], lens: &[usize], m: &mut Matrix) -> Outcome {
+    // try to place |len| broken springs
+    // then, make sure we can now skip a working spring
+    if len > springs.len() {
+        Outcome::Invalid
+    } else if springs[..len].iter().any(|spring| *spring == Spring::Ok) {
+        Outcome::Invalid
+    } else if len >= springs.len() {
+        arrangements(&springs[len..], lens, m)
+    } else if springs[len] == Spring::Broken {
+        Outcome::Invalid
+    } else {
+        arrangements(&springs[len + 1..], lens, m)
+    }
+}
+
+fn arrangements(springs: &[Spring], sequence: &[usize], m: &mut Matrix) -> Outcome {
+    // println!("Spring {:?} seq {:?}", springs, sequence);
+    if let memo @ (Outcome::Valid(_) | Outcome::Invalid) = m[springs.len()][sequence.len()] {
+        // println!("Is memo");
+        return memo;
+    }
+
+    let outcome = match (springs.iter().next(), sequence.iter().next()) {
+        (None, None) => Outcome::Valid(1),
+        (None, Some(_)) => Outcome::Invalid,
+        (Some(Spring::Ok), _) => arrangements(&springs[1..], sequence, m),
+        (Some(Spring::Broken), None) => Outcome::Invalid,
+        (Some(Spring::Broken), Some(len)) => place(*len, springs, &sequence[1..], m),
+        (Some(Spring::Unknown), None) => arrangements(&springs[1..], sequence, m),
+        (Some(Spring::Unknown), Some(len)) => {
+            let here = place(*len, springs, &sequence[1..], m).unwrap_or(0);
+            let there = arrangements(&springs[1..], sequence, m).unwrap_or(0);
+            Outcome::Valid(here + there)
+        }
+    };
+    m[springs.len()][sequence.len()] = outcome;
+    outcome
+}
