@@ -1,4 +1,3 @@
-use std::cmp::min;
 use colored::Colorize;
 
 #[derive(PartialEq, Debug)]

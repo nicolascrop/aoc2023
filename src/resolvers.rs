@@ -24,3 +24,7 @@ pub mod advent_17;
 pub mod advent_18;
 pub mod advent_19;
 pub mod advent_20;
+pub mod advent_21;
+pub mod advent_22;
+pub mod advent_23;
+pub mod advent_24;

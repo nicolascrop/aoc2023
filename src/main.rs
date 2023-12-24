@@ -31,6 +31,10 @@ fn main() {
         resolvers::advent_18::resolve,
         resolvers::advent_19::resolve,
         resolvers::advent_20::resolve,
+        resolvers::advent_21::resolve,
+        resolvers::advent_22::resolve,
+        resolvers::advent_23::resolve,
+        resolvers::advent_24::resolve,
     ];
     let args: Vec<String> = env::args().collect();
     let day: usize = args[1].parse().expect("Not a number!");

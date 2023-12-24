@@ -142,7 +142,7 @@ type RangeMap = HashMap<Category, (usize, usize)>;
 fn compute_range_possibilities(range: &RangeMap) -> usize {
     let mut result = 0;
     for r in range {
-        let value = if r.1.0 < r.1.1 { r.1.1 - r.1.0 } else { 0 };
+        let value = if r.1.0 < r.1.1 { (r.1.1 - r.1.0) + 1 } else { 0 };
         if result == 0 {
             result = value;
         } else {
@@ -233,7 +233,7 @@ pub fn resolve(input: &String) {
         println!("Parts: {:?}", parts);
         let result = do_workflow(&rules, &parts);
         println!("do workflow res: {}", result);
-        if (result) {
+        if result {
             for part in parts {
                 sum += part;
             }
