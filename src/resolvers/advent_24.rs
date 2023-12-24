@@ -79,30 +79,15 @@ pub fn resolve(input: &String) {
                 sum_with_past += 1;
             }
 
+            if !(((intersection_point.0 - hailstones[i].x.0 as f64 > 0f64) == (hailstones[i].x.1 > 0)) &&
+                ((intersection_point.1 - hailstones[i].y.0 as f64 > 0f64) == (hailstones[i].y.1 > 0))) {
+                continue;
+            }
+            if !(((intersection_point.0 - hailstones[j].x.0 as f64 > 0f64) == (hailstones[j].x.1 > 0)) &&
+                ((intersection_point.1 - hailstones[j].y.0 as f64 > 0f64) == (hailstones[j].y.1 > 0))) {
+                continue;
+            }
             // Test if intersection is in past
-            if hailstones[i].x.1 < 0 {
-                if intersection_point.0 > hailstones[i].x.0 as f64 {
-                    println!("Its in the past");
-                    continue;
-                }
-            } else {
-                if intersection_point.0 < hailstones[i].x.0 as f64 {
-                    println!("Its in the past");
-                    continue;
-                }
-            }
-
-            if hailstones[i].y.1 < 0 {
-                if intersection_point.1 > hailstones[i].y.0 as f64 {
-                    println!("Its in the past");
-                    continue;
-                }
-            } else {
-                if intersection_point.1 < hailstones[i].y.0 as f64 {
-                    println!("Its in the past");
-                    continue;
-                }
-            }
 
             if intersection_point.0 >= TEST_AREA_MIN && intersection_point.0 <= TEST_AREA_MAX && intersection_point.1 >= TEST_AREA_MIN && intersection_point.1 <= TEST_AREA_MAX {
                 println!("Collide at {:?}", intersection_point);
